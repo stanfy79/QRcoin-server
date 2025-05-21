@@ -1,7 +1,7 @@
-const axios = require('axios');
-const cheerio = require('cheerio');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   const targetUrl = 'https://qrcoin.fun';
   const selector = '.truncate';
 
@@ -15,4 +15,4 @@ module.exports = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: 'Failed to fetch or parse data' });
   }
-};
+}
