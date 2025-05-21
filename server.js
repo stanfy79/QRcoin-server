@@ -1,28 +1,17 @@
-const express = require('express');
-const axios = require('axios');
-const cheerio = require('cheerio');
-const cors = require('cors');
+import axios from 'axios';
+import * as cheerio from 'cheerio';
 
-const app = express();
-const PORT = 5000;
+export default async function handler(req, res) {
+  const targetUrl = 'https://qrcoin.fun'; // Change to the real URL
+  const selector = '.truncate'; // Change to the correct selector
 
-app.use(cors()); // Allow frontend to access the API
+  try {
+    const { data } = await axios.get(targetUrl);
+    const $ = cheerio.load(data);
+    const scrapedData = $(selector).text().trim();
 
-app.get('/scrape', async (req, res) => {
-    const targetUrl = 'https://qrcoin.fun'; // Change to the real URL
-    const selector = '.truncate'; // Change to the element you want to scrape
-
-    try {
-        const { data } = await axios.get(targetUrl);
-        const $ = cheerio.load(data);
-        const scrapedData = $(selector).text().trim();
-
-        res.json({ data: scrapedData || 'No data found' });
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch or parse data' });
-    }
-});
-
-app.listen(PORT, () => {
-    console.log(`Server running at http://localhost:${PORT}`);
-});
+    res.status(200).json({ data: scrapedData || 'No data found' });
+  } catch (error) {
+    res.status(500).json({ error: 'Failed to fetch or parse data' });
+  }
+}
